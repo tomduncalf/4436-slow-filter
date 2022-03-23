@@ -31,6 +31,21 @@ async function startApp() {
       }
     });
     console.timeEnd("createBlocks");
+
+    console.time("updateBlocks");
+    let blocks = realmDB.objects("Block").filtered('type == "THING"');
+    let ctr = 0;
+    realmDB.write(() => {
+      blocks.forEach((block) => {
+        console.log(ctr);
+        ctr++;
+        if (ctr > 5000) {
+          return;
+        }
+        block.name = `___Block content id: ${block._id}`;
+      });
+    });
+    console.timeEnd("updateBlocks");
   } catch (error) {
     console.log(`RealmDB initialization error: ${error}`);
   } finally {
